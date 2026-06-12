@@ -1089,69 +1089,10 @@
                     </button>
                 </form>
 
-                <div class="demo-credentials">
-                    <p class="demo-title">Demo Credentials</p>
-                    <div class="demo-item" id="demoCredentials">
-                        <span>Login ID:</span>
-                        <span id="demoId">—</span>
-                    </div>
-                    <div class="demo-item" id="demoPasswordItem">
-                        <span>Password:</span>
-                        <span id="demoPassword">gym</span>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- Dashboard Screen (Not used - redirects instead) -->
-        <div id="dashboardScreen" class="screen">
-            <div class="logo-container">
-                <h1 class="logo">GYM PROTOTYPE</h1>
-            </div>
 
-            <div class="dashboard">
-                <div class="dashboard-card">
-                    <div class="success-icon">
-                        <svg viewBox="0 0 24 24">
-                            <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                    </div>
-
-                    <p class="welcome-text">Login Successful! Welcome,</p>
-                    <h2 class="user-role" id="dashboardRole">Owner</h2>
-
-                    <div class="dashboard-info">
-                        <div class="info-row">
-                            <span class="info-label">User Type</span>
-                            <span class="info-value" id="userType">Gym Owner</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Login ID</span>
-                            <span class="info-value" id="userLoginId">—</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Session Started</span>
-                            <span class="info-value" id="sessionTime">--:--</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Status</span>
-                            <span class="info-value" style="color: var(--success);">● Active</span>
-                        </div>
-                    </div>
-
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
-                        Redirecting to your dashboard...
-                    </p>
-
-                    <button class="btn-secondary" id="logoutBtn">
-                        Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase CDN (v10 compat with ES modules) -->
     <script src="index.js"></script>
 </body>
 </html>
