@@ -1,4 +1,4 @@
-const RENDER_URL = 'https://node-gimbo.onrender.com';
+const RENDER_URL = 'https://node-gimbo-2.onrender.com';
 
 // Wake up Render
 fetch(`${RENDER_URL}/ping`, { method: 'GET', cache: 'no-store' }).catch(() => {});
