@@ -7,62 +7,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let selectedRole = null;
 
-  // Role selection
+  const selectionScreen = document.getElementById('selectionScreen');
+  const loginScreen     = document.getElementById('loginScreen');
+  const backBtn         = document.getElementById('backBtn');
+  const loginTypeBadge  = document.getElementById('loginTypeBadge');
+  const errorDiv        = document.getElementById('errorMessage');
+  const loginBtn        = document.getElementById('loginBtn');
+
+  // ── Show/hide screens ──────────────────────────────────────────
+  function showScreen(name) {
+    selectionScreen.classList.remove('active');
+    loginScreen.classList.remove('active');
+    if (name === 'selection') selectionScreen.classList.add('active');
+    if (name === 'login')     loginScreen.classList.add('active');
+  }
+
+  // ── Role card click ────────────────────────────────────────────
   document.querySelectorAll('.selection-card').forEach(card => {
     card.addEventListener('click', () => {
       selectedRole = card.dataset.role;
+
+      // Update badge text + zumba style
+      const label = selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1);
+      if (loginTypeBadge) {
+        loginTypeBadge.textContent = label;
+        loginTypeBadge.classList.toggle('zumba', selectedRole === 'zumba');
+      }
+      if (loginBtn) loginBtn.classList.toggle('zumba', selectedRole === 'zumba');
+
+      hideError();
+      showScreen('login');
+      setTimeout(() => document.getElementById('loginId')?.focus(), 300);
     });
   });
 
-  // Login handler
-  document.getElementById('loginBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
+  // ── Back button ────────────────────────────────────────────────
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      showScreen('selection');
+      hideError();
+    });
+  }
 
-    const email    = document.getElementById('loginId').value.trim();
-    const password = document.getElementById('password').value;
-    const errorDiv = document.getElementById('errorMessage');
-    const loginBtn = document.getElementById('loginBtn');
+  // ── Login button ───────────────────────────────────────────────
+  if (loginBtn) {
+    loginBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
 
-    if (!email || !password) {
-      errorDiv.textContent = 'Please fill in all fields.';
-      errorDiv.classList.add('show');
-      return;
-    }
+      const email    = document.getElementById('loginId').value.trim();
+      const password = document.getElementById('password').value;
 
-    if (!selectedRole) {
-      errorDiv.textContent = 'Please select a role first.';
-      errorDiv.classList.add('show');
-      return;
-    }
-
-    loginBtn.disabled = true;
-    loginBtn.classList.add('loading');
-    errorDiv.classList.remove('show');
-
-    try {
-      const res = await fetch(`${RENDER_URL}/api/login`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email, password, role: selectedRole })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        errorDiv.textContent = data.error || 'Login failed. Please try again.';
-        errorDiv.classList.add('show');
+      if (!email || !password) {
+        showError('Please fill in all fields.');
+        return;
+      }
+      if (!selectedRole) {
+        showError('Please select a role first.');
         return;
       }
 
-      window.location.href = RENDER_URL + data.redirectUrl;
+      loginBtn.disabled = true;
+      loginBtn.classList.add('loading');
+      hideError();
 
-    } catch (e) {
-      errorDiv.textContent = 'Network error. Please check your connection.';
+      try {
+        const res  = await fetch(`${RENDER_URL}/api/login`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email, password, role: selectedRole })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          showError(data.error || 'Login failed. Please try again.');
+          return;
+        }
+
+        window.location.href = RENDER_URL + data.redirectUrl;
+
+      } catch (err) {
+        showError('Network error. Please check your connection.');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.classList.remove('loading');
+      }
+    });
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────
+  function showError(msg) {
+    if (errorDiv) {
+      errorDiv.textContent = msg;
       errorDiv.classList.add('show');
-    } finally {
-      loginBtn.disabled = false;
-      loginBtn.classList.remove('loading');
     }
-  });
+  }
+  function hideError() {
+    if (errorDiv) errorDiv.classList.remove('show');
+  }
 
 });
